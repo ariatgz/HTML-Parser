@@ -225,7 +225,64 @@ function prettyPrint(node){
         case Node.DOCUMENT_FRAGMENT_NODE:{
             return printChildNodes(node);
         }
+        case Node.COMMENT_NODE:{
+            let comment=document.createElement('pp-comment');
+            comment.innerText=node.nodeValue;
+
+            return comment;
+        }
+        case Node.ELEMENT_NODE:{
+            let element= document.createElement("pp-element");
+            let opentag=document.createElement("pp-opentag");
+            let tagName= document.createElement("pp-tagname");
+
+            tagName.innerText=node.nodeName.toLowerCase();
+            opentag.appendChild(tagName);
+
+            Array.from(node.attributes).forEach(attr=>{
+                opentag.appendChild(prettyPrint(attr));
+
+            });
+
+            element.appendChild(opentag);
+
+            if (node.hasChildNodes()){
+                element.appendChild(printChildNodes(node));
+            }
+
+            let closetag=document.createElement('pp-closetag');
+            closetag.appendChild(tagName.cloneNode(true));
+            element.appendChild(closetag)
+
+            return element;
+        }
+        case Node.ATTRIBUTE_NODE:{
+            let attribute=document.createElement('pp-attribute');
+            let attrName = document.createElement('pp-attrname');
+            attrName.innerText=node.nodeName.toLowerCase();
+            attribute.appendChild(attrName);
+
+            if(node.nodeValue !== ""){
+                let attrValue=document.createElement('pp-attrvalue');
+                attrValue.innerText=node.nodeValue;
+                attribute.appendChild(attrValue);
+            }
+
+            return attribute;
+        }
+
+        case Node.TEXT_NODE:{
+
+            let text=document.createElement('pp-text');
+            text.innerText=node.nodeValue;
+
+            return text;
+
+
+        }
+
     }
+
 
     return node.cloneNode(true);
 

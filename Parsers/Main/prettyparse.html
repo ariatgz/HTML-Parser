@@ -7,6 +7,7 @@
     <title>HTML Pretty Printer</title>
     <meta name="description" content="HTML Pretty Printer">
     <meta name="author" content="Aria Taghizade with the help ofScott Means">
+    <link rel="stylesheet" href="style.css" type="text/css">
 
     <style>
         textarea[name=source] {
@@ -16,6 +17,13 @@
         section {
             display: flex;
             flex-direction: column;
+        }
+
+        @media print {
+            header, #input,#output>label{
+                display: none;
+            }
+
         }
     </style>
 </head>
