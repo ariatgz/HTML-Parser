@@ -207,6 +207,8 @@ function parser(html) {
 
 function prettyPrint(node){
 
+
+
     function printChildNodes(node) {
 
         let fragment=document.createDocumentFragment();
@@ -221,6 +223,9 @@ function prettyPrint(node){
     }
 
 
+    let voidList=["area","base","br","col","embed","hr","img","input","link"
+        ,"meta","param","source","track","wbr"];
+
     switch (node.nodeType){
         case Node.DOCUMENT_FRAGMENT_NODE:{
             return printChildNodes(node);
@@ -232,29 +237,62 @@ function prettyPrint(node){
             return comment;
         }
         case Node.ELEMENT_NODE:{
-            let element= document.createElement("pp-element");
-            let opentag=document.createElement("pp-opentag");
-            let tagName= document.createElement("pp-tagname");
 
-            tagName.innerText=node.nodeName.toLowerCase();
-            opentag.appendChild(tagName);
 
-            Array.from(node.attributes).forEach(attr=>{
-                opentag.appendChild(prettyPrint(attr));
+            if(voidList.includes(node.nodeName.toLowerCase())){
 
-            });
+                let element= document.createElement("pp-element");
+                let opentag=document.createElement("pp-opentagvoid");
+                let tagName= document.createElement("pp-tagnamevoid");
 
-            element.appendChild(opentag);
+                tagName.innerText=node.nodeName.toLowerCase();
+                opentag.appendChild(tagName);
 
-            if (node.hasChildNodes()){
-                element.appendChild(printChildNodes(node));
+                Array.from(node.attributes).forEach(attr=>{
+                    opentag.appendChild(prettyPrint(attr));
+
+                });
+
+                element.appendChild(opentag);
+
+
+
+
+
+
+
+                return element;
+
+
+
+            }else {
+                let element= document.createElement("pp-element");
+                let opentag=document.createElement("pp-opentag");
+                let tagName= document.createElement("pp-tagname");
+
+                tagName.innerText=node.nodeName.toLowerCase();
+                opentag.appendChild(tagName);
+
+                Array.from(node.attributes).forEach(attr=>{
+                    opentag.appendChild(prettyPrint(attr));
+
+                });
+
+                element.appendChild(opentag);
+
+                if (node.hasChildNodes()){
+                    element.appendChild(printChildNodes(node));
+                }
+
+                let closetag=document.createElement('pp-closetag');
+                closetag.appendChild(tagName.cloneNode(true));
+                element.appendChild(closetag)
+
+                return element;
+
             }
 
-            let closetag=document.createElement('pp-closetag');
-            closetag.appendChild(tagName.cloneNode(true));
-            element.appendChild(closetag)
 
-            return element;
         }
         case Node.ATTRIBUTE_NODE:{
             let attribute=document.createElement('pp-attribute');

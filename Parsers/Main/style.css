@@ -50,3 +50,20 @@ pp-text{
     color: black;
 }
 
+pp-tagnamevoid{
+
+    color: orange;
+}
+
+pp-tagnamevoid:after{
+    color: #0a68b6;
+    content: "/>";
+}
+pp-tagnamevoid:before{
+    color: #0a68b6;
+    content: "<";
+}
+
+
+
+
